@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.veadan.recManage.recDao.PrintDetailMapper">
+    <!-- 设置缓存 使用最近最少使用算法：移除最长时间不被使用的对象  flushInterval：缓存刷新时间  size：引用数目 -->
+    <cache eviction="LRU" flushInterval="60000" size="512" readOnly="false"/>
+    <!-- 定义可重用的 SQL 代码段 -->
+    <!--<sql id="userColumns"> ${alias}.userNo,${alias}.userName,${alias}.image,${alias}.password,${alias}.organizationId,${alias}.ckName</sql>-->
+    <select id="findPrintDetail" parameterType="com.veadan.recManage.recModel.PrintDetail" resultType="com.veadan.recManage.recModel.PrintDetail">
+
+        SELECT * FROM WHPD10_barcode WHERE del_flag='0'  AND 1=1
+        <if test="recId !=null">
+            AND  REC_ID=#{recId}
+        </if>
+
+        <if test="barcode !=null">
+            AND  BARCODE=#{barcode}
+        </if>
+    </select>
+
+
+
+
+</mapper>

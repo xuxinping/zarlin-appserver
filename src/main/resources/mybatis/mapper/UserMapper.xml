@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.veadan.userManage.userDao.UserMapper">
+	<!-- 设置缓存 使用最近最少使用算法：移除最长时间不被使用的对象  flushInterval：缓存刷新时间  size：引用数目 -->
+	<cache eviction="LRU" flushInterval="60000" size="512" readOnly="false"/>
+	<!-- 定义可重用的 SQL 代码段 -->
+	<!--<sql id="userColumns"> ${alias}.userNo,${alias}.userName,${alias}.image,${alias}.password,${alias}.organizationId,${alias}.ckName</sql>-->
+	<select id="findUserAuthor" parameterType="String" resultType="com.veadan.userManage.userModel.User">
+
+		SELECT user_no,password,role_id FROM whpd01 WHERE user_no=#{userNo}
+	</select>
+
+
+	<!-- userNo查询用户信息 -->
+	<select id="findUserByUserNo" parameterType="String"
+		resultType="com.veadan.userManage.userModel.User">
+		select user_name,user_no,use_flag,organization_id,ck_name,role_id,image,function FROM whpd01 WHERE user_no=#{userNo}
+	</select>
+
+	<!--用户名密码登录接口-->
+	<select id="loginByUserNoAndPassword" parameterType="com.veadan.userManage.userModel.User"
+		resultType="com.veadan.userManage.userModel.User">
+		select whpd01.* from whpd01 where whpd01.user_no=#{userNo} and whpd01.password =#{password}
+	</select>
+
+
+	<!--保管员刷卡登录-->
+	<select id="loginByCardNo" parameterType="String" resultType="com.veadan.userManage.userModel.User">
+		select whpd01.*,v_card.card_no from whpd01,v_card where whpd01.user_no=v_card.user_no and v_card.card_no=#{cardNo}
+	</select>
+	<!--用户名密码修改-->
+	<update id="updatePassword" parameterType="com.veadan.userManage.userModel.User">
+		update whpd01 set whpd01.password=#{password} where whpd01.user_no=#{userNo}
+	</update>
+
+	<!--图片修改-->
+	<update id="setUserImage" parameterType="com.veadan.userManage.userModel.User">
+		update whpd01 set whpd01.image=#{image} where whpd01.user_no=#{userNo}
+	</update>
+
+	<!--刷卡获取员工号-->
+	<select id="findUserByCardNo" parameterType="String" resultType="com.veadan.userManage.userModel.User">
+		select * from v_card where v_card.card_no=#{cardNo}
+
+	</select>
+	
+	<select id="findUserFunction" parameterType="String" resultType="com.veadan.userManage.userModel.UserFunction">
+
+		SELECT function_id,function_name FROM whpd02 WHERE function=#{function}
+	</select>
+	
+</mapper>

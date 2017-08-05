@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.veadan.recManage.recDao.RecMapper">
+    <!-- 设置缓存 使用最近最少使用算法：移除最长时间不被使用的对象  flushInterval：缓存刷新时间  size：引用数目 -->
+    <cache eviction="LRU" flushInterval="60000" size="512" readOnly="false"/>
+    <!-- 定义可重用的 SQL 代码段 -->
+    <!--<sql id="userColumns"> ${alias}.userNo,${alias}.userName,${alias}.image,${alias}.password,${alias}.organizationId,${alias}.ckName</sql>-->
+    <select id="findRecListBy" parameterType="com.veadan.recManage.recModel.RecList" resultType="com.veadan.recManage.recModel.RecList">
+
+        SELECT * FROM WHPD10 WHERE del_flag='0' AND BARCODE='Y' AND STATUS_CODE='00' AND 1=1
+        <if test="invPhysic !=null">
+          AND  inv_physic=#{invPhysic}
+        </if>
+
+        <if test="itemId !=null">
+          AND  item_id=#{itemId}
+        </if>
+        
+        <if test="recCreateTime !=null">
+           AND rec_create_time like #{recCreateTime}||'%'
+        </if>
+
+        <if test="recMainId !=null">
+            AND rec_main_id =#{recMainId}
+        </if>
+
+    </select>
+
+    <select id="findRecSuppList" parameterType="String" resultType="com.veadan.recManage.recModel.RecSuppList">
+      SELECT supp_name, COUNT (1) count
+        FROM whpd10
+         WHERE status_code = '00'  AND DEL_FLAG = '0'
+        AND INV_PHYSIC = #{invPhysic}
+        GROUP BY supp_name
+    </select>
+
+
+
+
+</mapper>
